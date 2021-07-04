@@ -12,8 +12,7 @@ const client = new Discord.Client()
 const sadwords = ["sad","angry","unhappy"]
 const sencourage = [
   "Keep Going",
-  "Have a nice day",
-  "Ghari ja Ghari"
+  "Have a nice day"
 ]
 
 db.get("encourage").then(encourage => {
@@ -22,12 +21,6 @@ db.get("encourage").then(encourage => {
   }
 })
 
-
-db.get("responding").then(value => {
-  if (value == null) {
-    db.set("responding", true)
-  }
-})
 
 
 
@@ -102,19 +95,22 @@ client.on("message", msg => {
     })
   }
 
-  if (msg.content.startsWith(".responding")) {
-    value = msg.content.split(".responding ")[1]
 
-    if (value.toLowerCase() == "true") {
-      db.set("responding", true)
-      msg.channel.send("Responding is on.")
-    } else {
-       db.set("responding", false)
-      msg.channel.send("Responding is off.")     
-    }
-  }
 
 
 })
+
+
+
+
+
+client.on('guildMemberAdd', member => {
+  const channel = member.guild.channels.cache.find(ch => ch.name === 'in-the-house');
+  if (!channel) return;
+  channel.send(`Welcome to the server, ${member}`);
+});
+
+
+
 keepalive()
 client.login(process.env.Token)
