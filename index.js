@@ -103,11 +103,10 @@ client.on("message", msg => {
 
 
 
-
 client.on('guildMemberAdd', member => {
   const channel = member.guild.channels.cache.find(ch => ch.name === 'in-the-house');
   if (!channel) return;
-  channel.send(`Welcome to the server, ${member}`);
+  channel.send(`Welcome to the Plumbiscuit's Dev server, ${member}`);
 });
 
 
