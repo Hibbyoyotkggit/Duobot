@@ -1,46 +1,21 @@
 const Discord = require("discord.js")
 const fetch = require("node-fetch")
-const Database = require("@replit/database")
 const keepalive = require("./server")
 
-const db = new Database()
 
 
 
 const client = new Discord.Client()
 
-const sadwords = ["sad","angry","unhappy"]
-const sencourage = [
-  "Keep Going",
-  "Have a nice day"
+const sadwords = ["fuck","gay","mf","motherfucker","ass"]
+const encourage = [
+  "These Words are not allowed here ",
+  "No Foul Words here "
 ]
 
-db.get("encourage").then(encourage => {
-  if (!encourage || encourage.length < 1) {
-    db.set("encourage", sencourage)
-  }
-})
 
 
 
-
-function updateencourage(em){
-  db.get("encourage").then(encourage => {
-    encourage.push([em])
-    db.set("encourage", encourage)
-  })
-}
-
-function deleteencourage(index) {
-  db.get("encourage").then(encourage => {
-    if (encourage.length > index){
-      encourage.splice(index,1)
-      db.set("encourage",encourage)  
-
-    }
-
-  })
-}
 
 
 
@@ -64,50 +39,102 @@ client.on("ready",() => {
 client.on("message", msg => {
   if (msg.author.bot) return
 
-  if (msg.content === ".quote"){
+    if (!msg.guild) return;
+
+
+  if (msg.content === "!quote"){
     getQuote().then(quote => msg.channel.send(quote))
   }
   
-  db.get("responding").then(responding =>{
-    if (responding && sadWords.some(word => msg.content.includes(word))) {
-      db.get("encourage").then(encourage => {
+
+    if (sadwords.some(word => msg.content.includes(word))) {
         const encouragement = encourage[Math.floor(Math.random() * encourage.length)]
         msg.reply(encouragement)
+    }
+
+
+
+
+  // To kick a member
+  if (msg.content.startsWith('!kick')) {
+    const user = msg.mentions.users.first();
+    if (msg.member.hasPermission('KICK_MEMBERS')){
+      if (user) {
+        const member = msg.guild.member(user);
+        if (member) {
+          member
+            .kick('Optional reason that will display in the audit logs')
+            .then(() => {
+              msg.reply(`Successfully kicked ${user.tag}`);
+            })
+            .catch(err => {
+              message.reply('I was unable to kick the member');
+              console.error(err);
+            });
+        } else {
+          msg.reply("That user isn't in this guild!");
+        }
+      } else {
+        msg.reply("You didn't mention the user to kick!");
+      }
+    }
+  }
+  
+// To Ban a member
+    if (msg.content.startsWith('!ban')) {
+    const user = msg.mentions.users.first();
+    if (msg.member.hasPermission('BAN_MEMBERS')){
+      if (user) {
+        const member = msg.guild.member(user);
+        if (member) {
+          member
+            .ban({
+              reason: 'They were bad!',
+            })
+            .then(() => {
+              msg.reply(`Successfully banned ${user.tag}`);
+            })
+            .catch(err => {
+              msg.reply('I was unable to ban the member');
+              console.error(err);
+            });
+        } else {
+          msg.reply("That user isn't in this guild!");
+        }
+      } else {
+        msg.reply("You didn't mention the user to ban!");
+      }
+    }  
+  }
+
+  if (msg.content.startsWith('!clear')) {
+    if (msg.member.hasPermission('ADMINISTRATOR')) {
+      msg.channel.messages.fetch().then((results) => {
+        msg.channel.bulkDelete(results)
       })
     }
-  })
-
-  if (msg.content.startsWith(".new")){
-    em = msg.content.split(".new ")[1]
-    updateencourage(em)
-    msg.channel.send("New Encouraging message added")
   }
+  
 
-  if (msg.content.startsWith(".del")){
-    index = parseInt(msg.content.split(".del ")[1])
-    deleteencourage(index)
-    msg.channel.send("Encouraging Message Deleted Successfully")  
-  }
-
-  if (msg.content.startsWith(".list")){
-    db.get("encourage").then(encourage =>{
-      msg.channel.send(encourage)
-    })
-  }
-
-
-
+ 
+  
 
 })
 
+  const channelId = '857813800257978404' // welcome channel
+  const targetChannelId = '857813800257978403' // rules and info
+
+  client.on('guildMemberAdd', (member) => {
+    const msg = `Please welcome <@${member.id}> to the server! Please check out ${member.guild.channels.cache
+      .get(targetChannelId)
+      .toString()}`
+
+    const channel = member.guild.channels.cache.get(channelId)
+    channel.send(msg)
+  })
 
 
 
-client.on('guildMemberAdd', member => {
-  const channel = member.guild.channels.cache.find(ch => ch.name === 'in-the-house');
-  if (!channel) return;
-  channel.send(`Welcome to the Plumbiscuit's Dev server, ${member}`);
-});
 
 
 
