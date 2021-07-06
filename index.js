@@ -34,6 +34,9 @@ function getQuote(){
 
 client.on("ready",() => {
   console.log(`Logged in as ${client.user.tag}`)
+  client.user.setActivity("!help", {
+  type: "LISTENING",
+  })
 })
 
 client.on("message", msg => {
@@ -113,6 +116,24 @@ client.on("message", msg => {
         msg.channel.bulkDelete(results)
       })
     }
+  }
+
+
+  const customcommands = new Discord.MessageEmbed()
+	.setColor('#D62AD0')
+	.setTitle(' Duo Bot (Custom Commands)')
+  .addFields(
+		{ name: '!quote', value: 'Random Quote', inline: true },
+		{ name: '!canva', value: 'Canva Invitation', inline: true },
+		{ name: '!movie', value: 'Stream Movie', inline: true },
+    { name: '!linkedinlearn', value: 'linkedinlearning account', inline: true }
+	)
+   
+
+ 
+    
+  if (msg.content.startsWith('!help')){
+    msg.channel.send(customcommands);  
   }
   
   if (msg.content.startsWith('!canva')){
