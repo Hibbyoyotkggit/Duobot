@@ -115,8 +115,17 @@ client.on("message", msg => {
     }
   }
   
+  if (msg.content.startsWith('!canva')){
+    msg.reply(`Canva Pro LifeTime Subscription Invitation https://duocodies.cyou/canva`);  
+  }
 
- 
+  if (msg.content.startsWith('!movie')){
+    msg.reply(`Stream Movie https://duocodies.cyou/Movie`);  
+  }
+
+  if (msg.content.startsWith('!linkedinlearn')){
+    msg.reply(`Process to create linkedin account https://duocodies.cyou/linkedinlearn`);  
+  }
   
 
 })
