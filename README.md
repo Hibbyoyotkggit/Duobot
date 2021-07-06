@@ -30,6 +30,7 @@ from installing and updating, every part of the bot can be controlled from withi
 - Welcome (Welcomes all the new user)
 - Quotes (Returns Random Quotes to used)
 - Filter (Filter out Bad Words by Users)
+- Custom Commands
 
 
 # License
